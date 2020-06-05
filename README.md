@@ -7,7 +7,7 @@ Install `curl`, `fileinfo`, `intl` and `mbstring` for PHP. Put this in your `com
             "noris/jsoner": "~1.0"
         }
     }
-    
+
 and run `composer update`. Then, append this to your LocalSettings.php:
 
     wfLoadExtension( 'Jsoner' );
@@ -53,8 +53,8 @@ Put this to your `composer.local.json`:
             "noris/jsoner": "~1.0"
         }
     }
-    
-and run `composer update` (or `composer install` if you don't have a composer.lock yet). 
+
+and run `composer update` (or `composer install` if you don't have a composer.lock yet).
 
 ### Download (not recommended, manually)
 
@@ -72,7 +72,7 @@ This will enable the Jsoner extension and add the following functions to the Med
 
 ## Configuration
 
-The extension has multiple settings. Please put them after the `wfLoadExtension( 'Jsoner' );`. 
+The extension has multiple settings. Please put them after the `wfLoadExtension( 'Jsoner' );`.
 
 ### $jsonerBaseUrl (default = null)
 
@@ -95,7 +95,7 @@ Jsoner has a pipes and filters architecture. First, data is fetched, then filter
 finally, the data is transformed in a representation.
 
     Fetch → [Filter ...] → Transformer
-    
+
 This looks like this in MediaWiki syntax:
 
     // Fetch         → Filter              → Filter                  → Transformer
@@ -104,9 +104,9 @@ This looks like this in MediaWiki syntax:
 Lets run something interesting:
 
     {{ #jsoner:url=http://pokeapi.co/api/v2/pokemon/1/ | f-SelectSubtree=stats | t-JsonDump }}
-    
+
     ↓
-    
+
     [
         {
             "base_stat": 45,
@@ -182,9 +182,9 @@ Example: `f-CensorKeys=email,--protected--`
         "email": "tom@example.com"
       }
     ]   
-     
+
     ↓
-        
+
     [
       {
         "name": "Bob",
@@ -220,7 +220,7 @@ Example: `f-Reduce=mail,data.email`
     ]
 
     ↓
-    
+
     [
       {
         "id": "1",
@@ -256,9 +256,9 @@ Example: `f-RemoveKeys=email`
         "email": "tom@example.com"
       }
     ]
-     
+
     ↓
-        
+
     [
       {
         "name": "Bob"
@@ -377,11 +377,11 @@ With a list as input, calling `t-InlineList=email`
         "email": "tom@example.com"
       }
     ]
-    
+
     ↓
-    
+
     bob@example.com, tom@example.com
-    
+
 Good for, you guessed it: lists!
 
 ### JsonDumpTransformer (`t-JsonDump`)
@@ -406,22 +406,22 @@ With a list as input, calling `t-SingleElement=name`
         "email": "tom@example.com"
       }
     ]
-    
+
     ↓
-    
+
     Bob
-    
+
 With an object as input, calling `t-SingleElement=name`
 
     {
         "name": "Bob",
         "email": "bob@example.com"
     }
-    
+
     ↓
-    
+
     Bob
-    
+
 Nice for single values like IDs.
 
 ### StackedElementTransformer (`t-StackedElement`)
@@ -440,12 +440,12 @@ With a list as input:
         "email": "tom@example.com"
       }
     ]
-    
+
     ↓
-    
+
     Bob
     bob@example.com
-    
+
 With an object as input:
 
     {
@@ -454,7 +454,7 @@ With an object as input:
     }
 
     ↓
-    
+
     Tom
     tom@example.com
 
@@ -473,15 +473,86 @@ Creates a nice and sortable Wikitext table out of a list of objects.
         "email": "tom@example.com"
       }
     ]
-    
+
     ↓
-    
+
     ╔════════╦═════════════════╗
     ║ name ▼ ║ email         ▼ ║
     ╠════════╬═════════════════╣
     ║ Bob    ║ bob@example.com ║
     ║ Tom    ║ tom@example.com ║
     ╚════════╩═════════════════╝
+
+### MediaWikiTemplateTransformer (`t-mwTemplate`)
+Creates Wikitext depending on the given template.
+You probably have to create a suiting template for the query.
+Uses key=value pairs.
+
+Wiki-String: {{ template |key=value  }}
+
+Usage: `t-mwTemplate=template`
+
+With `t-mwTemplate=jsoner-template`
+
+
+
+    [
+      {
+        "name": "Bob",
+        "email": "bob@example.com"
+        "username": "bobexample"
+      },
+      {
+        "name": "Tom",
+        "email": "tom@example.com"
+        "username": "tomexample"
+      }
+    ]
+
+    ↓
+
+    ╔════════╦═════════════════╦══════════════╗
+    ║ name ▼ ║ email         ▼ ║username    ▼ ║
+    ╠════════╬═════════════════╣══════════════╣
+    ║ Bob    ║ bob@example.com ║ bobexample   ║
+    ║ Tom    ║ tom@example.com ║ tomexample   ║
+    ╚════════╩═════════════════╩══════════════╝
+
+The output is depending on the template you use.
+
+
+### MediaWikiTemplateTransformerAnonymous (`t-mwTemplateAnonymous`)
+Creates Wikitext depending on the given template.
+You probably have to create a suiting template for the query.
+Doesn't use key=value pairs, uses the Anonymous templating in the Mediawiki.
+Template in this use case :
+  template= {{{1}}}
+
+Usage: `t-mwTemplateAnonymous=template`
+
+    [
+      {
+        "name": "Bob",
+        "email": "bob@example.com"
+        "username": "bobexample"
+      },
+      {
+        "name": "Tom",
+        "email": "tom@example.com"
+        "username": "tomexample"
+      }
+    ]
+
+    ↓
+
+    Bob
+    bob@example.com
+    bobexample
+    Tom
+    tom@example.com
+    tomexample
+
+The output is depending on the template you use.
 
 ## Limitations
 
@@ -515,13 +586,13 @@ To see what you can do run one of
 To test, you can run
 
     make test
-    
+
 To fix warnings etc. from `make test`, you can run:
 
     make fix
-    
+
 To clean, you can run
-    
+
     make clean
 
 ## License
