@@ -526,7 +526,7 @@ Creates Wikitext depending on the given template.
 You probably have to create a suiting template for the query.
 Doesn't use key=value pairs, uses the Anonymous templating in the Mediawiki.
 Template in this use case :
-  template= {{{1}}}
+  template= {{{1}}} {{{2}}}
 
 Usage: `t-mwTemplateAnonymous=template`
 
@@ -545,12 +545,7 @@ Usage: `t-mwTemplateAnonymous=template`
 
     ↓
 
-    Bob
-    bob@example.com
-    bobexample
-    Tom
-    tom@example.com
-    tomexample
+    Bob bob@example.com Tom tom@example.com 
 
 The output is depending on the template you use.
 
